@@ -1475,9 +1475,7 @@ def main():
             st.image(wordcloud.to_array(), caption="Nuage de Mots des Feedbacks", use_column_width=True)
         
         
-        df["Sentiment"] = df["Si_autres_raison_préciser_"].fillna("").apply(lambda x: TextBlob(str(x)).sentiment.polarity)
-        df["Sentiment_Catégorie"] = df["Sentiment"].apply(lambda x: "Positif" if x > 0 else "Négatif" if x < 0 else "Neutre")
-
+        
             
     
     elif page == "Prédiction d'éligibilité":
