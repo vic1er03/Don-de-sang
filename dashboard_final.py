@@ -97,8 +97,6 @@ def load_data():
     """
     df_2019 = pd.read_csv(data_2019_path)
     df_volontaire = pd.read_csv(data_volontaire_path)
-    df=pd.read_excel(r"C:\Users\Ultra Tech\Desktop\Challenge dataset traité.xlsx")
-    #df_volontaires=pd.read_excel(r"C:\Users\Ultra Tech\Desktop\Challenge dataset traité.xlsx")
     
     # Convertir les colonnes de dates au format datetime
     date_columns = [col for col in df_2019.columns if 'date' in col.lower()]
@@ -117,7 +115,7 @@ def load_data():
             except:
                 pass
     
-    return df_2019, df_volontaire df,df_volontaires
+    return df_2019, df_volontaire
 
 @st.cache_data
 
@@ -974,8 +972,55 @@ def main():
     elif page == "Distribution géographique":
         st.header("🗺️ Distribution géographique des donneurs")
          # 1️⃣ Chargement des données (Fichier Excel)
-        file_path = r"C:\Users\Ultra Tech\Desktop\Challenge dataset traité.xlsx"  # Mets le bon chemin
-        df = pd.read_excel(file_path)
+        #file_path = r"C:\Users\Ultra Tech\Desktop\Challenge dataset traité.xlsx"  # Mets le bon chemin
+        df_carte = df_volontaire.copy()
+        # 🔹 Dictionnaire des nouveaux noms de colonnes
+        new_column_names = {
+            "ID": "ID",
+            "Age": "Age",
+            "Horodateur": "Horodateur",
+            "Niveau_d'etude": "Niveau_Etude",
+            "Genre_": "Genre",
+            "Taille_": "Taille",
+            "Poids": "Poids",
+            "Situation_Matrimoniale_(SM)": "Statut_Matrimonial",
+            "Profession_": "Profession",
+            "Arrondissement_de_résidence_": "Arrondissement",
+            "Quartier_de_Résidence_": "Quartier",
+            "Nationalité_": "Nationalite",
+            "Religion_": "Religion",
+            "A-t-il_(elle)_déjà_donné_le_sang_": "Deja_Donneur",
+            "Si_oui_preciser_la_date_du_dernier_don._": "Date_Dernier_Don",
+            "Taux_d’hémoglobine_": "Taux_Hemoglobine",
+            "ÉLIGIBILITÉ_AU_DON.": "Eligibilite_Don",
+            "Raison_indisponibilité__[Est_sous_anti-biothérapie__]": "Sous_Antibiotherapie",
+            "Raison_indisponibilité__[Taux_d’hémoglobine_bas_]": "Hemoglobine_Bas",
+            "Raison_indisponibilité__[date_de_dernier_Don_<_3_mois_]": "Dernier_Don_3Mois",
+            "Raison_indisponibilité__[IST_récente_(Exclu_VIH,_Hbs,_Hcv)]": "IST_Recente",
+            "Date_de_dernières_règles_(DDR)__": "DDR",
+            "Raison_de_l’indisponibilité_de_la_femme_[La_DDR_est_mauvais_si_<14_jour_avant_le_don]": "DDR_Mauvaise",
+            "Raison_de_l’indisponibilité_de_la_femme_[Allaitement_]": "Allaitement",
+            "Raison_de_l’indisponibilité_de_la_femme_[A_accoucher_ces_6_derniers_mois__]": "Accouchement_6Mois",
+            "Raison_de_l’indisponibilité_de_la_femme_[Interruption_de_grossesse__ces_06_derniers_mois]": "Interruption_Grossesse",
+            "Raison_de_l’indisponibilité_de_la_femme_[est_enceinte_]": "Enceinte",
+            "Autre_raisons,__preciser_": "Autres_Raisons",
+            'Sélectionner_"ok"_pour_envoyer_': "Confirmation_OK",
+            "Raison_de_non-eligibilité_totale__[Antécédent_de_transfusion]": "Transfusion_Antecedent",
+            "Raison_de_non-eligibilité_totale__[Porteur(HIV,hbs,hcv)]": "Porteur_VIH_HBS_HCV",
+            "Raison_de_non-eligibilité_totale__[Opéré]": "Opere",
+            "Raison_de_non-eligibilité_totale__[Drepanocytaire]": "Drepanocytose",
+            "Raison_de_non-eligibilité_totale__[Diabétique]": "Diabete",
+            "Raison_de_non-eligibilité_totale__[Hypertendus]": "Hypertension",
+            "Raison_de_non-eligibilité_totale__[Asthmatiques]": "Asthme",
+            "Raison_de_non-eligibilité_totale__[Cardiaque]": "Probleme_Cardiaque",
+            "Raison_de_non-eligibilité_totale__[Tatoué]": "Tatouage",
+            "Raison_de_non-eligibilité_totale__[Scarifié]": "Scarification",
+            "Si_autres_raison_préciser_": "Autres_Raisons_Precises"
+        }
+        
+        # 🔹 Renommage des colonnes du DataFrame
+        df_carte.rename(columns=new_column_names, inplace=True)
+
         
         
         # 2️⃣ Initialisation du Géocodeur avec timeout
@@ -1005,7 +1050,7 @@ def main():
                 return pd.Series(geo_cache[query])
         
             # Vérifier si les données sont valides avant d'envoyer la requête
-            if pd.isna(row["Quartier"]) or pd.isna(row["Arrondissement"]) or row["Quartier"] in modalites_indesirables :
+            if pd.isna(row["Quartier"]) or pd.isna(row["Arrondissement_de_résidence"]) or row["Quartier_de_Résidence"] in modalites_indesirables :
                 return pd.Series({'latitude': 4.0483, 'longitude': 9.7043})  # Coordonnées par défaut de Douala
         
             try:
@@ -1021,15 +1066,15 @@ def main():
             return pd.Series(geo_cache[query])
         
         # 5️⃣ Vérification et exécution du géocodage uniquement si nécessaire
-        if "latitude" in df.columns and "longitude" in df.columns:
+        if "latitude" in df_carte.columns and "longitude" in df_carte.columns:
             print("📌 Coordonnées déjà présentes dans le fichier. Géocodage non nécessaire.")
         else:
             print("📌 Démarrage du géocodage avec cache...")
             tqdm.pandas()  # Activation de la barre de progression
-            coordinates = df.progress_apply(get_coordinates_with_cache, axis=1)
+            coordinates = df_carte.progress_apply(get_coordinates_with_cache, axis=1)
         
             # Fusionner les nouvelles coordonnées avec les données existantes
-            df = pd.concat([df, coordinates], axis=1)
+            df_carte = pd.concat([df_carte, coordinates], axis=1)
         
             # Sauvegarder les résultats pour éviter de refaire le géocodage
             with open(cache_file, "w") as f:
@@ -1040,7 +1085,7 @@ def main():
         m = folium.Map(location=[4.0483, 9.7043], zoom_start=12, tiles='cartodb dark_matter')
         
         # 7️⃣ Ajout des marqueurs pour chaque donneur
-        for idx, row in df.iterrows():
+        for idx, row in df_carte.iterrows():
             popup_content = f"""
             <b>{row['Genre']}, {row['Age']} ans</b><br>
             <i>{row['Profession']}</i><br>
@@ -1062,7 +1107,7 @@ def main():
         location=[row['latitude'], row['longitude']]
         # Avec pondération (par exemple, selon le nombre de dons)
         heat_data_weighted = []
-        for idx, row in df.iterrows():
+        for idx, row in df_carte.iterrows():
             if not pd.isna(row['latitude']) and not pd.isna(row['longitude']):
                 # Ajouter un poids (par exemple, nombre de dons)
                 weight = row.get('Nombre_Dons', 1)  # Utiliser 1 comme valeur par défaut
@@ -1070,7 +1115,6 @@ def main():
         
         # Ajouter la couche de chaleur pondérée
         HeatMap(heat_data_weighted, radius=15, blur=10).add_to(m)
-
 
         from folium.plugins import MarkerCluster
         from folium import Choropleth, GeoJson
@@ -1083,7 +1127,7 @@ def main():
             # Créer une carte centrée sur Douala
             #m = folium.Map(location=[4.0483, 9.7043], zoom_start=12, tiles='CartoDB positron')
             m = folium.Map(location=[4.0483, 9.7043], zoom_start=12, tiles=None)
-
+        
             # Ajouter une couche blanche personnalisée
             folium.raster_layers.TileLayer(
                 tiles='',
@@ -1094,7 +1138,7 @@ def main():
                 opacity=1.0,
                 styles=[('background-color', '#ffffff')]
             ).add_to(m)
-
+        
             
             # Compter le nombre de dons par quartier
             quartier_counts = df['Quartier'].value_counts().reset_index()
@@ -1152,10 +1196,11 @@ def main():
                             tooltip=f"Quartier: {quartier}<br>Nombre de dons: {count}"
                         ).add_to(m)
             
-
         
+               
+                
         # 8️⃣ Affichage de la carte
-
+      
         folium_static(m)
 
     
