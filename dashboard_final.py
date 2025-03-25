@@ -1461,6 +1461,7 @@ def main():
     
     elif page == "Analyse de sentiment":
         st.header("💬 Analyse de sentiment des retours")
+        nltk.download("vader_lexicon")
         sia = SentimentIntensityAnalyzer()
         # Créer des visualisations pour l'analyse de sentiment
         sentiment_fig, wordcloud_path, comments_df = create_sentiment_analysis(df)
