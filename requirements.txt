@@ -14,3 +14,4 @@ textblob
 wordcloud
 xlsxwriter
 geopy
+openpyxl
