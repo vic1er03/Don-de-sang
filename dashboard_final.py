@@ -81,6 +81,7 @@ st.set_page_config(
 data_2019_path = "data_2019_preprocessed.csv"
 data_volontaire_path = "data_volontaire_preprocessed.csv"
 df_2020 = pd.read_csv("data_2020_pretraite.csv")
+df_volontaire = pd.read_csv(data_volontaire_path)
 df=df_volontaire.copy()
 df_volontaires=df_volontaire.copy()
 #analysis_results_dir = r"C:\Users\Ultra Tech\Desktop\analysis_results"
