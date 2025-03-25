@@ -1051,7 +1051,7 @@ def main():
                 return pd.Series(geo_cache[query])
         
             # Vérifier si les données sont valides avant d'envoyer la requête
-            if pd.isna(row["Quartier"]) or pd.isna(row["Arrondissement_de_résidence"]) or row["Quartier_de_Résidence"] in modalites_indesirables :
+            if pd.isna(row["Quartier"]) or pd.isna(row["Arrondissement"]) or row["Quartier"] in modalites_indesirables :
                 return pd.Series({'latitude': 4.0483, 'longitude': 9.7043})  # Coordonnées par défaut de Douala
         
             try:
