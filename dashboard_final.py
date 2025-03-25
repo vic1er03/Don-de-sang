@@ -1478,11 +1478,6 @@ def main():
         df["Sentiment"] = df["Si_autres_raison_préciser_"].fillna("").apply(lambda x: TextBlob(str(x)).sentiment.polarity)
         df["Sentiment_Catégorie"] = df["Sentiment"].apply(lambda x: "Positif" if x > 0 else "Négatif" if x < 0 else "Neutre")
 
-        fig_sentiment = px.histogram(df, x="Sentiment_Catégorie", title="Répartition des sentiments des feedbacks")
-        st.plotly_chart(fig_sentiment)
-
-        st.write("*Note :* Les valeurs positives indiquent des feedbacks positifs, les négatives des plaintes.")
-
             
     
     elif page == "Prédiction d'éligibilité":
