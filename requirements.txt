@@ -1,4 +1,6 @@
 streamlit
+scipy
+statsmodels
 pandas
 numpy
 matplotlib
@@ -11,7 +13,11 @@ scikit-learn
 joblib
 nltk
 textblob
+textblob_fr 
 wordcloud
 xlsxwriter
 geopy
 openpyxl
+pygwalker
+streamlit_option_menu
+streamlit_extras 
